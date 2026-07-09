@@ -1,4 +1,10 @@
 <?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+
 require_once __DIR__ . '/../app/db.php';
 ?>
 
@@ -18,7 +24,6 @@ require_once __DIR__ . '/../app/db.php';
             <ul class="nav-menu">
                 <li><a href="index.php">Home</a></li>
                 <?php
-
                 $loggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']['id_user']);
                 if ($loggedIn):
                     ?>

@@ -1,9 +1,10 @@
 <?php
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../app/db.php';
-
-
-
 
 $sql = "SELECT p.*, u.full_name, u.username 
         FROM post p 
@@ -15,7 +16,6 @@ $posts = [];
 if ($result) {
     $posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
-
 
 include 'header.php';
 ?>
@@ -36,7 +36,6 @@ include 'header.php';
             <div class="post-content">
                 <?= nl2br(htmlspecialchars($post['content'])) ?>
             </div>
-
 
             <?php
             $loggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']['id_user']);

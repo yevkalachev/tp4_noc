@@ -1,9 +1,12 @@
 <?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../app/db.php';
 
 
-
-// If not logged in, redirect to login
 if (!isset($_SESSION['user']) || empty($_SESSION['user']['id_user'])) {
     header('Location: login.php');
     exit;
@@ -25,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mysqli_stmt_bind_param($stmt, 'ssi', $title, $content, $userId);
         if (mysqli_stmt_execute($stmt)) {
             $success = 'Post published successfully! <a href="index.php">View all posts</a>.';
-            $_POST = []; // Clear the form
+            $_POST = [];
         } else {
             $error = 'Something went wrong. Please try again.';
         }
@@ -36,9 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include 'header.php';
 ?>
 
-    <h1>✏️ Write a New Post</h1>
+    <h1>Write a New Post</h1>
 
-<?php if ($error): ?><div class="alert alert-danger"><?= $error ?></div><?php endif; ?>
+<?php if ($error): ?><div class="alert alert-danger"><?= htmlspecialchars($error) ?></div><?php endif; ?>
 <?php if ($success): ?><div class="alert alert-success"><?= $success ?></div><?php endif; ?>
 
     <form method="POST" action="">

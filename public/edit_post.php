@@ -1,9 +1,12 @@
 <?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../app/db.php';
 
 
-
-// Must be logged in
 if (!isset($_SESSION['user']) || empty($_SESSION['user']['id_user'])) {
     header('Location: login.php');
     exit;
@@ -11,7 +14,7 @@ if (!isset($_SESSION['user']) || empty($_SESSION['user']['id_user'])) {
 
 $id = $_GET['id'] ?? 0;
 
-// Fetch the post to check ownership
+
 $sql = "SELECT * FROM post WHERE id_post = ?";
 $stmt = mysqli_prepare($conn, $sql);
 mysqli_stmt_bind_param($stmt, 'i', $id);
@@ -20,7 +23,7 @@ $result = mysqli_stmt_get_result($stmt);
 $post = mysqli_fetch_assoc($result);
 mysqli_stmt_close($stmt);
 
-// If post doesn't exist or belongs to someone else, redirect
+
 if (!$post || $post['id_user'] != $_SESSION['user']['id_user']) {
     header('Location: index.php');
     exit;
@@ -42,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mysqli_stmt_bind_param($stmt, 'ssii', $title, $content, $id, $userId);
         if (mysqli_stmt_execute($stmt)) {
             $success = 'Post updated successfully!';
-            // Refresh the post data
+
             $post['title'] = $title;
             $post['content'] = $content;
         } else {
@@ -55,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include 'header.php';
 ?>
 
-    <h1>✏️ Edit Post</h1>
+    <h1>Edit Post</h1>
 
-<?php if ($error): ?><div class="alert alert-danger"><?= $error ?></div><?php endif; ?>
+<?php if ($error): ?><div class="alert alert-danger"><?= htmlspecialchars($error) ?></div><?php endif; ?>
 <?php if ($success): ?><div class="alert alert-success"><?= $success ?> <a href="index.php">Go Home</a></div><?php endif; ?>
 
     <form method="POST" action="">

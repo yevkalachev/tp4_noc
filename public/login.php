@@ -1,6 +1,16 @@
 <?php
-require_once __DIR__ . '/../app/db.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+
+if (isset($_SESSION['user']) && !empty($_SESSION['user']['id_user'])) {
+    header('Location: index.php');
+    exit;
+}
+
+require_once __DIR__ . '/../app/db.php';
 
 $error = null;
 
@@ -38,12 +48,12 @@ include 'header.php';
 
     <h1>Login</h1>
 
-<?php if ($error): ?><div class="alert alert-danger"><?= $error ?></div><?php endif; ?>
+<?php if ($error): ?><div class="alert alert-danger"><?= htmlspecialchars($error) ?></div><?php endif; ?>
 
     <form method="POST" action="">
         <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username" value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
