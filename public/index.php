@@ -20,7 +20,7 @@ if ($result) {
 include 'header.php';
 ?>
 
-    <h1>All Forum Posts</h1>
+    <h1>sshAll Forum Posts</h1>
 
 <?php if (empty($posts)): ?>
     <p style="text-align:center; color:#7f8c8d;">No posts yet. Be the first to write!</p>
